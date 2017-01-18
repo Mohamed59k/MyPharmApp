@@ -90,7 +90,7 @@
             android:layout_weight="1.0">
 
             <ImageView
-                android:id="@+id/adress_image"
+                android:id="@+id/address_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.20"

@@ -31,7 +31,7 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pharmacy);
 
-        //On récupère les informations passées à l'activité et on remplit les champs.
+        //On récupère les informations passées à l'activité et on remplit les champs
         Bundle b = getIntent().getExtras();
         if(b != null){
             ArrayList<String> values = b.getStringArrayList("values");
