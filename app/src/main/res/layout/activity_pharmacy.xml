@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -28,87 +26,40 @@
         android:layout_weight="1.0"
         android:orientation="vertical" >
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:layout_weight="1.0">
 
-            <ImageButton
-                android:id="@+id/pharmacy_favorite"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                app:srcCompat="@android:drawable/btn_star"
-                tools:ignore="ContentDescription"
-                android:background="@android:color/transparent" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/pharmacy_favorite"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.20"
+                    app:srcCompat="@android:drawable/btn_star"
+                    tools:ignore="ContentDescription"
+                    android:background="@android:color/transparent" />
 
 
-             <TextView
-                 android:id="@+id/pharmacy_name"
-                 android:layout_width="0dp"
-                 android:layout_height="wrap_content"
-                 android:layout_weight="0.80"
-                 android:paddingLeft="20dp"
-                 android:text="@string/name_field" />
+                 <TextView
+                     android:id="@+id/pharmacy_name"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_weight="0.80"
+                     android:paddingLeft="20dp"
+                     android:text="@string/name_field" />
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1.0">
-
-            <ImageView
-                android:id="@+id/phone_image"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                app:srcCompat="@mipmap/ic_phone"
-                tools:ignore="ContentDescription"
-                android:background="@android:color/transparent" />
-
-
-            <TextView
-                android:id="@+id/pharmacy_phone"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.80"
-                android:paddingLeft="20dp"
-                android:text="@string/phone_field" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_weight="1.0">
-
-            <ImageView
-                android:id="@+id/adress_image"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                app:srcCompat="@mipmap/ic_adress"
-                tools:ignore="ContentDescription"
-                android:background="@android:color/transparent" />
-
-
-            <TextView
-                android:id="@+id/pharmacy_adress"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.80"
-                android:paddingLeft="20dp"
-                android:text="@string/adress_field" />
-
-        </LinearLayout>
-
+        </ScrollView>
     </LinearLayout>
 
 </LinearLayout>
