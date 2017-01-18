@@ -67,6 +67,9 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
                 Bundle b = new Bundle();
                 values.add(Long.toString(pharmacy.getId()));
                 values.add(pharmacy.getName());
+                values.add(pharmacy.getAdress());
+                values.add(pharmacy.getPhone());
+                values.add(Boolean.toString(pharmacy.isOpenNow()));
                 values.add(Float.toString(pharmacy.getLat()));
                 values.add(Float.toString(pharmacy.getLng()));
                 b.putStringArrayList("values", values);
