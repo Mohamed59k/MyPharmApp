@@ -31,8 +31,7 @@ public class DataBase extends SQLiteOpenHelper {
         public static final String PHARMACY_ADRESS = "adress";
         public static final String PHARMACY_PHONE = "phone";
         public static final String PHARMACY_OPENNOW = "openNow";
-        public static final String PHARMACY_OPENING_HOUR = "openingHour";
-        public static final String PHARMACY_CLOSING_HOUR = "closingHour";
+        public static final String PHARMACY_OPENING_HOURS = "openingHours";
         public static final String PHARMACY_LAT = "lat";
         public static final String PHARMACY_LGT = "lng";
     }
@@ -44,7 +43,7 @@ public class DataBase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE Pharmacy(" + PharmacyTable.TABLE_NAME + " INTEGER PRIMARY KEY," +
-                PharmacyTable.PHARMACY_NAME + " VARCHAR(100),"+ PharmacyTable.PHARMACY_ADRESS + " VARCHAR(100)," + PharmacyTable.PHARMACY_PHONE + " VARCHAR(100), "+ PharmacyTable.PHARMACY_OPENNOW + " BOOLEAN, " + PharmacyTable.PHARMACY_OPENING_HOUR + " VARCHAR(5), "+ PharmacyTable.PHARMACY_CLOSING_HOUR + " VARCHAR(5), "+ PharmacyTable.PHARMACY_LAT + " FLOAT, " + PharmacyTable.PHARMACY_LGT + " FLOAT)");
+                PharmacyTable.PHARMACY_NAME + " VARCHAR(100),"+ PharmacyTable.PHARMACY_ADRESS + " VARCHAR(100)," + PharmacyTable.PHARMACY_PHONE + " VARCHAR(100), "+ PharmacyTable.PHARMACY_OPENNOW + " BOOLEAN, " + PharmacyTable.PHARMACY_OPENING_HOURS + " VARCHAR(100), " + PharmacyTable.PHARMACY_LAT + " FLOAT, " + PharmacyTable.PHARMACY_LGT + " FLOAT)");
     }
 
     @Override
@@ -64,7 +63,7 @@ public class DataBase extends SQLiteOpenHelper {
         cursor.moveToFirst();
 
         while(!cursor.isAfterLast()) {
-            Pharmacy pharmacy = new Pharmacy(cursor.getLong(cursor.getColumnIndex("Pharmacy")), cursor.getString(cursor.getColumnIndex("name")), cursor.getString(cursor.getColumnIndex("adress")), cursor.getString(cursor.getColumnIndex("phone")), (cursor.getInt(cursor.getColumnIndex("openNow")) >0) , cursor.getString(cursor.getColumnIndex("openingHour")), cursor.getString(cursor.getColumnIndex("closingHour")), cursor.getFloat(cursor.getColumnIndex("lat")), cursor.getFloat(cursor.getColumnIndex("lng")));
+            Pharmacy pharmacy = new Pharmacy(cursor.getLong(cursor.getColumnIndex("Pharmacy")), cursor.getString(cursor.getColumnIndex("name")), cursor.getString(cursor.getColumnIndex("adress")), cursor.getString(cursor.getColumnIndex("phone")), (cursor.getInt(cursor.getColumnIndex("openNow")) >0) , cursor.getString(cursor.getColumnIndex("openingHours")), cursor.getFloat(cursor.getColumnIndex("lat")), cursor.getFloat(cursor.getColumnIndex("lng")));
             pharmacies.add(pharmacy);
             cursor.moveToNext();
         }
@@ -82,7 +81,7 @@ public class DataBase extends SQLiteOpenHelper {
         Log.d("22222 : ", "ici");
         if(!cursor.isAfterLast()){
             Log.d("33333 : ", "ici");
-            Pharmacy py = new Pharmacy(cursor.getLong(cursor.getColumnIndex("Pharmacy")), cursor.getString(cursor.getColumnIndex("name")), cursor.getString(cursor.getColumnIndex("adress")), cursor.getString(cursor.getColumnIndex("phone")), (cursor.getInt(cursor.getColumnIndex("openNow")) >0) , cursor.getString(cursor.getColumnIndex("openingHour")), cursor.getString(cursor.getColumnIndex("closingHour")), cursor.getFloat(cursor.getColumnIndex("lat")), cursor.getFloat(cursor.getColumnIndex("lng")));
+            Pharmacy py = new Pharmacy(cursor.getLong(cursor.getColumnIndex("Pharmacy")), cursor.getString(cursor.getColumnIndex("name")), cursor.getString(cursor.getColumnIndex("adress")), cursor.getString(cursor.getColumnIndex("phone")), (cursor.getInt(cursor.getColumnIndex("openNow")) >0) , cursor.getString(cursor.getColumnIndex("openingHours")), cursor.getFloat(cursor.getColumnIndex("lat")), cursor.getFloat(cursor.getColumnIndex("lng")));
             return py;
         }
         Log.d("44444 : ", "ici");
@@ -98,7 +97,7 @@ public class DataBase extends SQLiteOpenHelper {
     public void putPharmacy(Pharmacy pharmacy) {
         Pharmacy found = searchPharmacyByNameOrAdress(pharmacy);
         if(found!=null){
-            Pharmacy toUpdate = new Pharmacy(found.getId(), pharmacy.getName(), pharmacy.getAdress(), pharmacy.getPhone(), pharmacy.isOpenNow(), pharmacy.getOpeningHour(), pharmacy.getClosingHour(), pharmacy.getLat(), pharmacy.getLng());
+            Pharmacy toUpdate = new Pharmacy(found.getId(), pharmacy.getName(), pharmacy.getAdress(), pharmacy.getPhone(), pharmacy.isOpenNow(), pharmacy.getOpeningHours(), pharmacy.getLat(), pharmacy.getLng());
             this.updatePharmacy(toUpdate);
         }else{
             SQLiteDatabase db = getWritableDatabase();
@@ -107,8 +106,7 @@ public class DataBase extends SQLiteOpenHelper {
             values.put(PharmacyTable.PHARMACY_ADRESS, pharmacy.getAdress());
             values.put(PharmacyTable.PHARMACY_PHONE, pharmacy.getPhone());
             values.put(PharmacyTable.PHARMACY_OPENNOW, pharmacy.isOpenNow());
-            values.put(PharmacyTable.PHARMACY_OPENING_HOUR, pharmacy.getOpeningHour());
-            values.put(PharmacyTable.PHARMACY_CLOSING_HOUR, pharmacy.getClosingHour());
+            values.put(PharmacyTable.PHARMACY_OPENING_HOURS, pharmacy.getOpeningHours());
             values.put(PharmacyTable.PHARMACY_LAT, pharmacy.getLat());
             values.put(PharmacyTable.PHARMACY_LGT, pharmacy.getLng());
             db.insert(PharmacyTable.TABLE_NAME, null, values);
@@ -155,8 +153,7 @@ public class DataBase extends SQLiteOpenHelper {
         values.put(PharmacyTable.PHARMACY_ADRESS, pharmacy.getAdress());
         values.put(PharmacyTable.PHARMACY_PHONE, pharmacy.getPhone());
         values.put(PharmacyTable.PHARMACY_OPENNOW, pharmacy.isOpenNow());
-        values.put(PharmacyTable.PHARMACY_OPENING_HOUR, pharmacy.getOpeningHour());
-        values.put(PharmacyTable.PHARMACY_CLOSING_HOUR, pharmacy.getClosingHour());
+        values.put(PharmacyTable.PHARMACY_OPENING_HOURS, pharmacy.getOpeningHours());
         values.put(PharmacyTable.PHARMACY_LAT, pharmacy.getLat());
         values.put(PharmacyTable.PHARMACY_LGT, pharmacy.getLng());
         db.update(PharmacyTable.TABLE_NAME, values, PharmacyTable.TABLE_NAME+"=" + pharmacy.getId(), null);

@@ -10,31 +10,28 @@ public class Pharmacy {
     private String name;
     private String adress;
     private boolean openNow;
-    private String openingHour;
-    private String closingHour;
+    private String openingHours;
     private String phone;
     private Float lat;
     private Float lng;
 
-    public Pharmacy(long id, String name, String adress, String phone, boolean openNow, String openingHour, String closingHour, Float lat, Float lng){
+    public Pharmacy(long id, String name, String adress, String phone, boolean openNow, String openingHours, Float lat, Float lng){
         this.id = id;
         this.name = name;
         this.adress = adress;
         this.phone = phone;
         this.openNow = openNow;
-        this.openingHour = openingHour;
-        this.closingHour = closingHour;
+        this.openingHours = openingHours;
         this.lat = lat;
         this.lng = lng;
     }
 
-    public Pharmacy(String name, String adress, String phone, boolean openNow, String openingHour, String closingHour, Float lat, Float lng){
+    public Pharmacy(String name, String adress, String phone, boolean openNow, String openingHours, Float lat, Float lng){
         this.name = name;
         this.adress = adress;
         this.phone = phone;
         this.openNow = openNow;
-        this.openingHour = openingHour;
-        this.closingHour = closingHour;
+        this.openingHours = openingHours;
         this.phone = phone;
         this.lat = lat;
         this.lng = lng;
@@ -56,14 +53,6 @@ public class Pharmacy {
         this.phone = phone;
     }
 
-    public String getClosingHour() {
-        return closingHour;
-    }
-
-    public void setClosingHour(String closingHour) {
-        this.closingHour = closingHour;
-    }
-
     public boolean isOpenNow() {
         return openNow;
     }
@@ -80,12 +69,12 @@ public class Pharmacy {
         this.lng = lng;
     }
 
-    public String getOpeningHour() {
-        return openingHour;
+    public String getOpeningHours() {
+        return openingHours;
     }
 
-    public void setOpeningHour(String openingHour) {
-        this.openingHour = openingHour;
+    public void setOpeningHours(String openingHours) {
+        this.openingHours = openingHours;
     }
 
     public String getAdress() {

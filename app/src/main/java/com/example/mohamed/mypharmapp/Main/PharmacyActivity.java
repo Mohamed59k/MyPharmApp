@@ -23,6 +23,7 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
     private String adress;
     private String phone;
     private Boolean isOpenNow;
+    private String openingHours;
     private Float lat;
     private Float lng;
 
@@ -40,8 +41,9 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
             this.adress = values.get(2);
             this.phone = values.get(3);
             this.isOpenNow = Boolean.parseBoolean(values.get(4));
-            this.lat = Float.parseFloat(values.get(5));
-            this.lng = Float.parseFloat(values.get(6));
+            this.openingHours = values.get(5);
+            this.lat = Float.parseFloat(values.get(6));
+            this.lng = Float.parseFloat(values.get(7));
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -60,6 +62,8 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
     {
         TextView nameField = (TextView) findViewById(R.id.pharmacy_name);
         nameField.setText(this.name);
+        TextView hoursField = (TextView) findViewById(R.id.pharmacy_hours);
+        hoursField.setText(this.openingHours);
         TextView phoneField = (TextView) findViewById(R.id.pharmacy_phone);
         phoneField.setText(this.phone);
         TextView adressFiels = (TextView) findViewById(R.id.pharmacy_adress);

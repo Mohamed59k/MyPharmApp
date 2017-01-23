@@ -63,6 +63,33 @@
             android:layout_weight="1.0">
 
             <ImageView
+                android:id="@+id/clock_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.20"
+                app:srcCompat="@mipmap/ic_clock"
+                tools:ignore="ContentDescription"
+                android:background="@android:color/transparent" />
+
+
+            <TextView
+                android:id="@+id/pharmacy_hours"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.80"
+                android:paddingLeft="20dp"
+                android:text="@string/hours_field" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1.0">
+
+            <ImageView
                 android:id="@+id/phone_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

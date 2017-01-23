@@ -70,6 +70,7 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
                 values.add(pharmacy.getAdress());
                 values.add(pharmacy.getPhone());
                 values.add(Boolean.toString(pharmacy.isOpenNow()));
+                values.add(pharmacy.getOpeningHours());
                 values.add(Float.toString(pharmacy.getLat()));
                 values.add(Float.toString(pharmacy.getLng()));
                 b.putStringArrayList("values", values);

@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ArrayList<Pharmacy> pharmacies = pharmacyDb.getAllPharmacies();
 
         for(Pharmacy pharmacy: pharmacies){
-            Log.d("id: ", pharmacy.getId() + ", name : " +pharmacy.getName() + ", adress : " +pharmacy.getAdress() + ", phone : " +pharmacy.getPhone() + ", openNow : " +pharmacy.isOpenNow() + ", openingHour : " +pharmacy.getOpeningHour() + ", closingHour : " +pharmacy.getClosingHour() + ", lat : " +pharmacy.getLat() + ", lng : " +pharmacy.getLng());
+            Log.d("id: ", pharmacy.getId() + ", name : " +pharmacy.getName() + ", adress : " +pharmacy.getAdress() + ", phone : " +pharmacy.getPhone() + ", openNow : " +pharmacy.isOpenNow() + ", openingHours : " +pharmacy.getOpeningHours() + ", lat : " +pharmacy.getLat() + ", lng : " +pharmacy.getLng());
         }
 
         PharmacyAdapter adapter = new PharmacyAdapter(this, pharmacies);
@@ -204,15 +204,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //get openingHours and closingHours
                 JSONObject hours = result.getJSONObject("opening_hours");
                 boolean openNow = hours.getBoolean("open_now");
-                String weekdayText = hours.getString("weekday_text");
-                Log.d("weekdayText: ", weekdayText);
+                JSONArray hoursArray = hours.getJSONArray("weekday_text");
+                String openingHours = "";
+                for(int i=0; i<hoursArray.length(); i++){
+                    if(i==(hoursArray.length()-1)){
+                        openingHours += hoursArray.get(i);
+                    }else{
+                        openingHours += hoursArray.get(i)+"\n";
+                    }
+
+                }
+                Log.d("openingHours: ", openingHours);
 
                 //get lat and lng
                 JSONObject location = result.getJSONObject("geometry").getJSONObject("location");
                 Float lat = BigDecimal.valueOf(location.getDouble("lat")).floatValue();
                 Float lng = BigDecimal.valueOf(location.getDouble("lng")).floatValue();
 
-                Pharmacy pharmacy = new Pharmacy(name, adress, phone, openNow, "", "", lat, lng);
+                Pharmacy pharmacy = new Pharmacy(name, adress, phone, openNow, openingHours, lat, lng);
                 DataBase pharmacyDb = new DataBase(getApplicationContext());
                 pharmacyDb.putPharmacy(pharmacy);
                 pharmacyDb.close();
