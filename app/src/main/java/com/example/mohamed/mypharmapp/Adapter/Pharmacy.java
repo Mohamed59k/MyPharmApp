@@ -15,6 +15,8 @@ public class Pharmacy {
     private String phone;
     private Float lat;
     private Float lng;
+    private Boolean favourite;
+
 
     public Pharmacy(long id, String name, String adress, String phone, boolean openNow, String openingHour, String closingHour, Float lat, Float lng){
         this.id = id;
@@ -26,6 +28,7 @@ public class Pharmacy {
         this.closingHour = closingHour;
         this.lat = lat;
         this.lng = lng;
+        this.favourite = false;
     }
 
     public Pharmacy(String name, String adress, String phone, boolean openNow, String openingHour, String closingHour, Float lat, Float lng){
@@ -38,8 +41,12 @@ public class Pharmacy {
         this.phone = phone;
         this.lat = lat;
         this.lng = lng;
-
+        this.favourite = false;
     }
+    public Boolean getFavourite(){return favourite;}
+
+    public void setFavourite(Boolean favourite){this.favourite = favourite;}
+
     public Float getLat() {
         return lat;
     }

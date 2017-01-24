@@ -35,6 +35,7 @@ public class DataBase extends SQLiteOpenHelper {
         public static final String PHARMACY_CLOSING_HOUR = "closingHour";
         public static final String PHARMACY_LAT = "lat";
         public static final String PHARMACY_LGT = "lng";
+        public static final String PHARMACY_FAVOURITE = "favourite";
     }
 
     public DataBase(Context context) {
@@ -44,9 +45,15 @@ public class DataBase extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE Pharmacy(" + PharmacyTable.TABLE_NAME + " INTEGER PRIMARY KEY," +
-                PharmacyTable.PHARMACY_NAME + " VARCHAR(100),"+ PharmacyTable.PHARMACY_ADRESS + " VARCHAR(100)," + PharmacyTable.PHARMACY_PHONE + " VARCHAR(100), "+ PharmacyTable.PHARMACY_OPENNOW + " BOOLEAN, " + PharmacyTable.PHARMACY_OPENING_HOUR + " VARCHAR(5), "+ PharmacyTable.PHARMACY_CLOSING_HOUR + " VARCHAR(5), "+ PharmacyTable.PHARMACY_LAT + " FLOAT, " + PharmacyTable.PHARMACY_LGT + " FLOAT)");
+                PharmacyTable.PHARMACY_NAME + " VARCHAR(100),"+ PharmacyTable.PHARMACY_ADRESS + " VARCHAR(100)," + PharmacyTable.PHARMACY_PHONE + " VARCHAR(100), "+ PharmacyTable.PHARMACY_OPENNOW + " BOOLEAN, " + PharmacyTable.PHARMACY_OPENING_HOUR + " VARCHAR(5), "+ PharmacyTable.PHARMACY_CLOSING_HOUR + " VARCHAR(5), "+ PharmacyTable.PHARMACY_LAT + " FLOAT, " + PharmacyTable.PHARMACY_LGT + " FLOAT," + PharmacyTable.PHARMACY_LGT + " BOOLEAN)");
     }
 
+   /* public void onStart(SQLiteDatabase sqLiteDatabase){
+        String sql ="DROP TABLE Pharmacy";
+        sqLiteDatabase.execSQL(sql);
+        sqLiteDatabase.execSQL("CREATE TABLE Pharmacy(" + PharmacyTable.TABLE_NAME + " INTEGER PRIMARY KEY," +
+                PharmacyTable.PHARMACY_NAME + " VARCHAR(100),"+ PharmacyTable.PHARMACY_ADRESS + " VARCHAR(100)," + PharmacyTable.PHARMACY_PHONE + " VARCHAR(100), "+ PharmacyTable.PHARMACY_OPENNOW + " BOOLEAN, " + PharmacyTable.PHARMACY_OPENING_HOUR + " VARCHAR(5), "+ PharmacyTable.PHARMACY_CLOSING_HOUR + " VARCHAR(5), "+ PharmacyTable.PHARMACY_LAT + " FLOAT, " + PharmacyTable.PHARMACY_LGT + " FLOAT," + PharmacyTable.PHARMACY_LGT + " BOOLEAN)");
+    }*/
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
     }
@@ -72,6 +79,22 @@ public class DataBase extends SQLiteOpenHelper {
         db.close();
         return pharmacies;
     }
+
+    public ArrayList<Pharmacy> getAllFavourites(){
+        ArrayList<Pharmacy> pharmacies = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + PharmacyTable.TABLE_NAME + " WHERE " + PharmacyTable.PHARMACY_FAVOURITE + "=true";
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+
+        while(!cursor.isAfterLast()) {
+            Pharmacy pharmacy = new Pharmacy(cursor.getLong(cursor.getColumnIndex("Pharmacy")), cursor.getString(cursor.getColumnIndex("name")), cursor.getString(cursor.getColumnIndex("adress")), cursor.getString(cursor.getColumnIndex("phone")), (cursor.getInt(cursor.getColumnIndex("openNow")) >0) , cursor.getString(cursor.getColumnIndex("openingHour")), cursor.getString(cursor.getColumnIndex("closingHour")), cursor.getFloat(cursor.getColumnIndex("lat")), cursor.getFloat(cursor.getColumnIndex("lng")));
+            pharmacies.add(pharmacy);
+            cursor.moveToNext();
+        }
+        return pharmacies;
+    }
+
 
     public Pharmacy searchPharmacyByNameOrAdress(Pharmacy pharmacy){
         Log.d("11111 : ", pharmacy.getAdress());

@@ -14,7 +14,6 @@ import java.util.List;
 public class FavouriteListActivity extends AppCompatActivity {
     private List<Pharmacy> pharmacies;
     ListView listView;
-    DataBase pharmacyDB;
 
 
 
@@ -23,7 +22,8 @@ public class FavouriteListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite_list);
 
-        pharmacies = pharmacyDB.getAllPharmacies();
+        DataBase pharmacyDb = new DataBase(getApplicationContext());
+        pharmacies = pharmacyDb.getAllFavourites();
         PharmacyAdapter adapter = new PharmacyAdapter(this, (ArrayList<Pharmacy>) pharmacies);
         listView = (ListView) findViewById(R.id.list_favourite);
         listView.setAdapter(adapter);
