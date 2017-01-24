@@ -2,13 +2,18 @@ package com.example.mohamed.mypharmapp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mohamed.mypharmapp.Main.DataBase;
 import com.example.mohamed.mypharmapp.Main.MainActivity;
 import com.example.mohamed.mypharmapp.Main.PharmacyActivity;
 import com.example.mohamed.mypharmapp.R;
@@ -50,6 +55,14 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
         final TextView planteName = (TextView) convertView.findViewById(R.id.name);
         final TextView planteAdress = (TextView) convertView.findViewById(R.id.adress);
         final TextView planteDistance = (TextView) convertView.findViewById(R.id.distance);
+        final ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+
+        if(pharmacy.isOpenNow()){
+            imageView.setBackgroundColor(Color.parseColor("#A3FFAF"));
+        }else{
+            imageView.setBackgroundColor(Color.parseColor("#FF6565"));
+        }
+
 
         //On met les éléments demandés dans les champs (NB : cela doit être une string)
         planteName.setText(pharmacy.getName());
@@ -79,18 +92,28 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
             }
         });
 
-        //Code pour gérer le clique sur bouton de suppression d'une plante
-        /*ImageButton deleteImageView = (ImageButton) convertView.findViewById(R.id.imageButton);
-        deleteImageView.setOnClickListener(new ImageButton.OnClickListener() {
+        //Code pour gérer le clique sur bouton de favoris d'une pharmacie
+        final ImageButton favoriteButton = (ImageButton) convertView.findViewById(R.id.favorite_button);
+        //favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+        favoriteButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(getContext() instanceof MainActivity){
-                    PlanteDB planteDb = new PlanteDB(getContext());
-                    planteDb.deletePlante(plante);
+                    DataBase pharmacyDb = new DataBase(getContext());
+                    if(pharmacy.isFavorite()){
+                        pharmacy.setFavorite(false);
+                        //Log.d("la", ""+favoriteButton.getim);
+                        favoriteButton.setImageResource(android.R.drawable.btn_star);
+                    }else{
+                        pharmacy.setFavorite(true);
+                        favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+                    }
+                    pharmacyDb.updatePharmacy(pharmacy);
                     ((MainActivity)getContext()).refreshList();
+                    pharmacyDb.close();
                 }
             }
-        });*/
+        });
 
         //On retourne la vue de la ligne
         return convertView;

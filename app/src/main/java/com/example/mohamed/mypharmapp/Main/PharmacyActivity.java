@@ -10,6 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -48,7 +49,7 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.pharmacy_map);
         mapFragment.getMapAsync(this);
 
         fillFields();
@@ -91,6 +92,11 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.addMarker(new MarkerOptions()
                 .title("Sydney")
                 .snippet("The most populous city in Australia.")
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_adress))
                 .position(lieu));
+
+        mMap.setMyLocationEnabled(true);
+
+        //mMap.addPolyline()
     }
 }

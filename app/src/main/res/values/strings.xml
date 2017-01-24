@@ -5,5 +5,8 @@
     <string name="distance_field">Distance</string>
     <string name="hours_field">Heures</string>
     <string name="phone_field">Telephone</string>
+    <string name="title_activity_favourite">Favourite List</string>
+    <string name="garde">Pharmacies de garde</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCRFuEoAV8sdMDanZ3sFgQ4PY2h5dOLePA</string>
+    <string name="str_atv_places">Enter Place Here</string>
 </resources>
