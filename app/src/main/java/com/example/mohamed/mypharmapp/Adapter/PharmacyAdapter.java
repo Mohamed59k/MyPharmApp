@@ -20,10 +20,6 @@ import com.example.mohamed.mypharmapp.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by Mohamed on 08/01/2017.
- */
-
 public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
 
     private View currentView;
