@@ -56,11 +56,19 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
         final TextView planteAdress = (TextView) convertView.findViewById(R.id.adress);
         final TextView planteDistance = (TextView) convertView.findViewById(R.id.distance);
         final ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+        final ImageButton favoriteButton = (ImageButton) convertView.findViewById(R.id.favorite_button);
 
         if(pharmacy.isOpenNow()){
             imageView.setBackgroundColor(Color.parseColor("#A3FFAF"));
         }else{
             imageView.setBackgroundColor(Color.parseColor("#FF6565"));
+        }
+
+        if(pharmacy.isFavorite()){
+            favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+        }else{
+            favoriteButton.setImageResource(android.R.drawable.btn_star);
+
         }
 
 
@@ -93,8 +101,7 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
         });
 
         //Code pour gérer le clique sur bouton de favoris d'une pharmacie
-        final ImageButton favoriteButton = (ImageButton) convertView.findViewById(R.id.favorite_button);
-        //favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+        //final ImageButton favoriteButton = (ImageButton) convertView.findViewById(R.id.favorite_button);
         favoriteButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,14 +109,12 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
                     DataBase pharmacyDb = new DataBase(getContext());
                     if(pharmacy.isFavorite()){
                         pharmacy.setFavorite(false);
-                        //Log.d("la", ""+favoriteButton.getim);
                         favoriteButton.setImageResource(android.R.drawable.btn_star);
                     }else{
                         pharmacy.setFavorite(true);
                         favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
                     }
                     pharmacyDb.updatePharmacy(pharmacy);
-                    ((MainActivity)getContext()).refreshList();
                     pharmacyDb.close();
                 }
             }
