@@ -21,6 +21,12 @@ public class FavouriteListActivity extends AppCompatActivity {
         this.refreshList();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        this.refreshList();
+    }
+
     /**
      * Permet de rafraîchir la ListView lors de l'initialisation et après chaque modification.
      * On récupère une liste de plantes depuis la base de données, on crée l'adaptateur d'item pour une ligne,

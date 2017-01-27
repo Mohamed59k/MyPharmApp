@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mohamed.mypharmapp.Main.DataBase;
+import com.example.mohamed.mypharmapp.Main.FavouriteListActivity;
 import com.example.mohamed.mypharmapp.Main.MainActivity;
 import com.example.mohamed.mypharmapp.Main.PharmacyActivity;
 import com.example.mohamed.mypharmapp.R;
@@ -71,7 +72,7 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
         //On met les éléments demandés dans les champs (NB : cela doit être une string)
         planteName.setText(pharmacy.getName());
         planteAdress.setText(pharmacy.getAdress());
-        planteDistance.setText(String.valueOf(pharmacy.getId()));
+        planteDistance.setText(pharmacy.getDistanceText());
 
         /*Ajouter un clique. Lorsque l'on clique sur un élément de la ListView on récupère les différentes
          informations de la plante et on les envoie à notre Activité PlanteActivity pour qu'on puisse
@@ -90,9 +91,17 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
                 values.add(pharmacy.getOpeningHours());
                 values.add(Float.toString(pharmacy.getLat()));
                 values.add(Float.toString(pharmacy.getLng()));
+                values.add(pharmacy.getDistanceText());
+                values.add(Integer.toString(pharmacy.getDistanceValue()));
+                values.add(Boolean.toString(pharmacy.isFavorite()));
                 b.putStringArrayList("values", values);
                 intent.putExtras(b);
-                ((MainActivity)getContext()).startActivityForResult(intent, 1);
+
+                if(getContext() instanceof MainActivity) {
+                    ((MainActivity) getContext()).startActivityForResult(intent, 1);
+                }else if(getContext() instanceof FavouriteListActivity){
+                    ((FavouriteListActivity) getContext()).startActivityForResult(intent, 1);
+                }
             }
         });
 
@@ -101,7 +110,7 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
         favoriteButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getContext() instanceof MainActivity){
+                if(getContext() instanceof MainActivity || getContext() instanceof FavouriteListActivity){
                     DataBase pharmacyDb = new DataBase(getContext());
                     if(pharmacy.isFavorite()){
                         pharmacy.setFavorite(false);
@@ -112,11 +121,33 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
                     }
                     pharmacyDb.updatePharmacy(pharmacy);
                     pharmacyDb.close();
+                    if(getContext() instanceof FavouriteListActivity){
+                        ((FavouriteListActivity) getContext()).refreshList();
+                    }
                 }
             }
         });
 
         //On retourne la vue de la ligne
         return convertView;
+    }
+
+    public static String formatDist(float meters) {
+        if (meters < 1000) {
+            return ((int) meters) + "m";
+        } else if (meters < 10000) {
+            return formatDec(meters / 1000f, 1) + "km";
+        } else {
+            return ((int) (meters / 1000f)) + "km";
+        }
+    }
+
+    static String formatDec(float val, int dec) {
+        int factor = (int) Math.pow(10, dec);
+
+        int front = (int) (val);
+        int back = (int) Math.abs(val * (factor)) % factor;
+
+        return front + "." + back;
     }
 }

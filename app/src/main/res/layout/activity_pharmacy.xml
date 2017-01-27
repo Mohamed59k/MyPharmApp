@@ -30,20 +30,18 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1.0">
+                android:layout_height="50dp"
+                android:gravity="center">
 
                 <ImageButton
                     android:id="@+id/pharmacy_favorite"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.20"
                     app:srcCompat="@android:drawable/btn_star"
                     tools:ignore="ContentDescription"
@@ -53,9 +51,10 @@
                  <TextView
                      android:id="@+id/pharmacy_name"
                      android:layout_width="0dp"
-                     android:layout_height="match_parent"
+                     android:layout_height="wrap_content"
                      android:layout_weight="0.80"
                      android:paddingLeft="20dp"
+                     android:gravity="left"
                      android:text="@string/name_field" />
 
             </LinearLayout>
@@ -63,14 +62,13 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1.0">
+                android:layout_height="wrap_content"
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/clock_image"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.20"
                     app:srcCompat="@mipmap/ic_clock"
                     tools:ignore="ContentDescription"
@@ -80,9 +78,10 @@
                 <TextView
                     android:id="@+id/pharmacy_hours"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.80"
                     android:paddingLeft="20dp"
+                    android:gravity="left"
                     android:text="@string/hours_field" />
 
             </LinearLayout>
@@ -90,14 +89,13 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1.0">
+                android:layout_height="50dp"
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/phone_image"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.20"
                     app:srcCompat="@mipmap/ic_phone"
                     tools:ignore="ContentDescription"
@@ -107,9 +105,10 @@
                 <TextView
                     android:id="@+id/pharmacy_phone"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.80"
                     android:paddingLeft="20dp"
+                    android:gravity="left"
                     android:text="@string/phone_field" />
 
             </LinearLayout>
@@ -117,14 +116,13 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:layout_weight="1.0">
+                android:layout_height="50dp"
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/address_image"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.20"
                     app:srcCompat="@mipmap/ic_adress"
                     tools:ignore="ContentDescription"
@@ -134,9 +132,10 @@
                 <TextView
                     android:id="@+id/pharmacy_adress"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.80"
                     android:paddingLeft="20dp"
+                    android:gravity="left"
                     android:text="@string/adress_field" />
 
             </LinearLayout>

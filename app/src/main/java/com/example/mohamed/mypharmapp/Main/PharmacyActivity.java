@@ -2,9 +2,12 @@ package com.example.mohamed.mypharmapp.Main;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.mohamed.mypharmapp.Adapter.Pharmacy;
 import com.example.mohamed.mypharmapp.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +30,9 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
     private String openingHours;
     private Float lat;
     private Float lng;
+    private String distanceText;
+    private Integer distanceValue;
+    private boolean isFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,9 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
             this.openingHours = values.get(5);
             this.lat = Float.parseFloat(values.get(6));
             this.lng = Float.parseFloat(values.get(7));
+            this.distanceText = values.get(8);
+            this.distanceValue = Integer.parseInt(values.get(9));
+            this.isFavorite = Boolean.parseBoolean(values.get(10));
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -69,6 +78,31 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
         phoneField.setText(this.phone);
         TextView adressFiels = (TextView) findViewById(R.id.pharmacy_adress);
         adressFiels.setText(this.adress);
+
+        final ImageButton favoriteButton = (ImageButton) findViewById(R.id.pharmacy_favorite);
+
+        if(isFavorite){
+            favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+        }else{
+            favoriteButton.setImageResource(android.R.drawable.btn_star);
+
+        }
+
+        favoriteButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataBase pharmacyDb = new DataBase(getApplicationContext());
+                if(isFavorite){
+                    isFavorite=false;
+                    favoriteButton.setImageResource(android.R.drawable.btn_star);
+                }else{
+                    isFavorite=true;
+                    favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+                }
+                pharmacyDb.updatePharmacy(new Pharmacy(id, name, adress, phone, isOpenNow, openingHours, lat, lng, distanceText, distanceValue, isFavorite));
+                pharmacyDb.close();
+            }
+        });
     }
 
     /**

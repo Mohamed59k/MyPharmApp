@@ -1,8 +1,15 @@
 package com.example.mohamed.mypharmapp.Main;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +19,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -24,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -45,10 +55,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private Double lat;
     private Double lng;
+    SupportMapFragment mapFragment;
+    private Integer radius;
+
+    protected LocationManager mLocationManager;
+    LocationListener mLocationListener;
+    // The minimum distance to change Updates in meters
+    private static final float LOCATION_REFRESH_DISTANCE = 1; // 10 meters
+
+    // The minimum time between updates in milliseconds
+    private static final long LOCATION_REFRESH_TIME = 1; // 1 minute
 
     AutoCompleteTextView atvPlaces;
     PlacesTask placesTask;
@@ -60,15 +82,63 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+
+
+
+        LocationListener mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(final Location location) {
+                //your code here
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+
+
+        };
+
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ContextCompat.checkSelfPermission( this, Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
+                    LOCATION_REFRESH_DISTANCE, mLocationListener);
+            Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                this.lat = location.getLatitude();
+                this.lng = location.getLongitude();
+            }
+        }
+
 /////////////////////
-        atvPlaces = (AutoCompleteTextView) findViewById(R.id.atv_places);
+        final ArrayAdapterSearchView searchView = (ArrayAdapterSearchView) findViewById(R.id.action_search);;
+        searchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //searchView.setText(adapter.getItem(position).toString());
+
+            }
+        });
+
+        /*atvPlaces = (AutoCompleteTextView) findViewById(R.id.atv_places);
         atvPlaces.setThreshold(1);
 
         atvPlaces.addTextChangedListener(new TextWatcher() {
@@ -89,14 +159,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
             }
-        });
+        });*/
 //////////////////////
 
 
-        this.lat = 50.703094;
-        this.lng = 3.218449;
-        new JsonTask().execute("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius=2000&types=pharmacy&key=AIzaSyCRFuEoAV8sdMDanZ3sFgQ4PY2h5dOLePA", "ALL");
+        //this.lat = 50.703094;
+        //this.lng = 3.218449;
+        this.radius = 1100;
+        new JsonTask("ALL", this.lat, this.lng).execute("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius="+this.radius+"&types=pharmacy&key=AIzaSyCRFuEoAV8sdMDanZ3sFgQ4PY2h5dOLePA");
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mapFragment.getMapAsync(this);
+        //this.refreshList();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -130,16 +208,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     public void refreshList() {
         DataBase pharmacyDb = new DataBase(getApplicationContext());
-        ArrayList<Pharmacy> pharmacies = pharmacyDb.getAllPharmacies();
+        ArrayList<Pharmacy> pharmacies = pharmacyDb.getAllPharmaciesByRadius(this.radius);
 
         for(Pharmacy pharmacy: pharmacies){
             Log.d("id: ", pharmacy.getId() + ", name : " +pharmacy.getName() + ", adress : " +pharmacy.getAdress() + ", phone : " +pharmacy.getPhone() + ", openNow : " +pharmacy.isOpenNow() + ", openingHours : " +pharmacy.getOpeningHours() + ", lat : " +pharmacy.getLat() + ", lng : " +pharmacy.getLng());
+            LatLng lieu = new LatLng(pharmacy.getLat(), pharmacy.getLng());
+            mMap.addMarker(new MarkerOptions()
+                    .title(pharmacy.getName())
+                    .snippet(pharmacy.getAdress())
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_adress))
+                    .position(lieu));
         }
 
         PharmacyAdapter adapter = new PharmacyAdapter(this, pharmacies);
         ListView listView = (ListView) findViewById(R.id.pharmacy_list);
         listView.setAdapter(adapter);
         pharmacyDb.close();
+
+
     }
 
     /**
@@ -155,23 +241,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setMyLocationEnabled(true);
+
         LatLng lieu = new LatLng(this.lat, this.lng);
 
         //mMap.setMyLocationEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lieu, 15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lieu, 14));
 
         mMap.addMarker(new MarkerOptions()
-                .title("Sydney")
-                .snippet("The most populous city in Australia.")
+                .title("Votre position")
                 .position(lieu));
 
-        mMap.setMyLocationEnabled(true);
+        this.refreshList();
     }
 
     private class JsonTask extends AsyncTask<String, String, String> {
 
         private String type;
         ProgressDialog pd;
+        private Double lat;
+        private Double lng;
+        private Pharmacy pharmacy;
+
+        protected JsonTask(String type, Double lat, Double lng){
+            this.type = type;
+            this.lat = lat;
+            this.lng = lng;
+        }
+
+        protected JsonTask(String type, Pharmacy pharmacy){
+            this.type = type;
+            this.pharmacy = pharmacy;
+        }
 
         protected void onPreExecute() {
             super.onPreExecute();
@@ -187,7 +288,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             try {
                 URL url = new URL(params[0]);
-                this.type = params[1];
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 InputStream stream = connection.getInputStream();
@@ -230,8 +330,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     jsonSearchAllPharmacies(json);
                 }else if(this.type.equalsIgnoreCase("DETAILS")){
                     jsonSearchDetailsPharmacy(json);
+                }else if(this.type.equalsIgnoreCase("DISTANCE")){
+                    jsonSearchDistancePharmacy(json);
                 }
-                refreshList();
+                //refreshList();
             } catch (Exception e) {
 
             }
@@ -244,7 +346,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     JSONObject current = results.getJSONObject(i);
                     String placeId = current.getString("place_id");
                     //lancer requete pour recuperer les details de la pharmacie
-                    new JsonTask().execute("https://maps.googleapis.com/maps/api/place/details/json?placeid="+placeId+"&language=fr&key=AIzaSyCRFuEoAV8sdMDanZ3sFgQ4PY2h5dOLePA", "DETAILS");
+                    new JsonTask("DETAILS", this.lat, this.lng).execute("https://maps.googleapis.com/maps/api/place/details/json?placeid="+placeId+"&language=fr&key=AIzaSyCRFuEoAV8sdMDanZ3sFgQ4PY2h5dOLePA");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -303,7 +405,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
 
-                Pharmacy pharmacy = new Pharmacy(name, adress, phone, openNow, openingHours, lat, lng, false);
+                Pharmacy pharmacy = new Pharmacy(name, adress, phone, openNow, openingHours, lat, lng, "", 0, false);
+                new JsonTask("DISTANCE", pharmacy).execute("https://maps.googleapis.com/maps/api/distancematrix/json?origins="+this.lat+","+this.lng+"&destinations="+lat+","+lng+"&mode=walking&transit_routing_preference=less_walking&language=fr-FR&key=AIzaSyCRFuEoAV8sdMDanZ3sFgQ4PY2h5dOLePA");
+
+                /*Location user = new Location("User");
+                user.setLatitude(this.lat);
+                user.setLongitude(this.lng);
+
+                Location locationB = new Location("Pharmacy");
+                locationB.setLatitude(lat);
+                locationB.setLongitude(lng);
+
+                Float distance = user.distanceTo(locationB);
+                Log.d("Distance : ", name+", d : "+distance);*/
+
+                //Pharmacy pharmacy = new Pharmacy(name, adress, phone, openNow, openingHours, lat, lng, distance, false);
+                //DataBase pharmacyDb = new DataBase(getApplicationContext());
+                //pharmacyDb.putPharmacy(pharmacy);
+                //pharmacyDb.close();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void jsonSearchDistancePharmacy(JSONObject json) {
+            try {
+                JSONArray elements = json.getJSONArray("rows").getJSONObject(0).getJSONArray("elements");
+
+                String distanceText = elements.getJSONObject(0).getJSONObject("distance").getString("text");
+                Integer distanceValue = elements.getJSONObject(0).getJSONObject("distance").getInt("value");
+
+                pharmacy.setDistanceText(distanceText);
+                pharmacy.setDistanceValue(distanceValue);
                 DataBase pharmacyDb = new DataBase(getApplicationContext());
                 pharmacyDb.putPharmacy(pharmacy);
                 pharmacyDb.close();
