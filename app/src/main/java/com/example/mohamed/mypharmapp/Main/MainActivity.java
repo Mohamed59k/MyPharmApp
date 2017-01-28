@@ -3,11 +3,13 @@ package com.example.mohamed.mypharmapp.Main;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -52,6 +54,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Double lng;
     SupportMapFragment mapFragment;
     private Integer radius;
+    private Integer zoom;
+    private Boolean prefTriPharmacieProche;
+    private Boolean prefTriPharmacieOuverte;
 
     protected LocationManager mLocationManager;
     LocationListener mLocationListener;
@@ -80,6 +87,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //preferences
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //recuperation de la zone de recherche
+        String prefRadius = sharedPreferences.getString("pref_radius", "1000");
+        this.radius = Integer.parseInt(prefRadius);
+
+        //recuperation du zoom
+        String prefZoom = sharedPreferences.getString("pref_zoom", "14");
+        this.zoom = Integer.parseInt(prefZoom);
+
+        prefTriPharmacieProche = sharedPreferences.getBoolean("pref_tri_pharmacie_proche", false);
+        prefTriPharmacieOuverte = sharedPreferences.getBoolean("pref_tri_pharmacie_ouverte", false);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -165,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //this.lat = 50.703094;
         //this.lng = 3.218449;
-        this.radius = 1100;
         new JsonTask("ALL", this.lat, this.lng).execute("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lng+"&radius="+this.radius+"&types=pharmacy&key=AIzaSyCRFuEoAV8sdMDanZ3sFgQ4PY2h5dOLePA");
 
     }
@@ -173,6 +194,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onResume(){
         super.onResume();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //recuperation de la zone de recherche
+        String prefRadius = sharedPreferences.getString("pref_radius", "1000");
+        this.radius = Integer.parseInt(prefRadius);
+
+        //recuperation du zoom
+        String prefZoom = sharedPreferences.getString("pref_zoom", "14");
+        this.zoom = Integer.parseInt(prefZoom);
+
+        prefTriPharmacieProche = sharedPreferences.getBoolean("pref_tri_pharmacie_proche", false);
+        prefTriPharmacieOuverte = sharedPreferences.getBoolean("pref_tri_pharmacie_ouverte", false);
+
         mapFragment.getMapAsync(this);
         //this.refreshList();
     }
@@ -185,10 +220,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.favourite:
+            case R.id.action_favourite:
                 Intent intent = new Intent(this, FavouriteListActivity.class);//FavouriteListActivity
+                ArrayList<String> values = new ArrayList<String>();
+                Bundle b = new Bundle();
+                values.add(Double.toString(this.lat));
+                values.add(Double.toString(this.lng));
+                b.putStringArrayList("values", values);
+                intent.putExtras(b);
                 startActivity(intent);
                 return true;
+            case R.id.action_settings:
+                Intent intentSetPref = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivityForResult(intentSetPref, 0);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -207,12 +251,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * on déclare notre ListView et on finit par ajouter notre adapter à la liste.
      */
     public void refreshList() {
+
         DataBase pharmacyDb = new DataBase(getApplicationContext());
         ArrayList<Pharmacy> pharmacies = pharmacyDb.getAllPharmaciesByRadius(this.radius);
+
+        mMap.clear();
 
         for(Pharmacy pharmacy: pharmacies){
             Log.d("id: ", pharmacy.getId() + ", name : " +pharmacy.getName() + ", adress : " +pharmacy.getAdress() + ", phone : " +pharmacy.getPhone() + ", openNow : " +pharmacy.isOpenNow() + ", openingHours : " +pharmacy.getOpeningHours() + ", lat : " +pharmacy.getLat() + ", lng : " +pharmacy.getLng());
             LatLng lieu = new LatLng(pharmacy.getLat(), pharmacy.getLng());
+
             mMap.addMarker(new MarkerOptions()
                     .title(pharmacy.getName())
                     .snippet(pharmacy.getAdress())
@@ -220,7 +268,50 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .position(lieu));
         }
 
-        PharmacyAdapter adapter = new PharmacyAdapter(this, pharmacies);
+        if(prefTriPharmacieProche){
+            Collections.sort(pharmacies, new Comparator<Pharmacy>(){
+                @Override
+                public int compare(Pharmacy p1, Pharmacy p2) {
+                    return Integer.valueOf(p1.getDistanceValue()).compareTo(p2.getDistanceValue());
+                }
+            });
+        }else if(prefTriPharmacieOuverte){
+            Collections.sort(pharmacies, new Comparator<Pharmacy>(){
+                @Override
+                public int compare(Pharmacy p1, Pharmacy p2) {
+                    Boolean p1Opened = Boolean.valueOf(p1.isOpenNow());
+                    Boolean p2Opened = Boolean.valueOf(p2.isOpenNow());
+                    if(p1Opened && !p2Opened){
+                        return -1;
+                    }else if (!p1Opened && p2Opened){
+                        return 1;
+                    }
+                    return 0;
+                }
+            });
+        }else if(prefTriPharmacieProche && prefTriPharmacieOuverte){
+            Collections.sort(pharmacies, new Comparator<Pharmacy>(){
+                @Override
+                public int compare(Pharmacy p1, Pharmacy p2) {
+                    return Integer.valueOf(p1.getDistanceValue()).compareTo(p2.getDistanceValue());
+                }
+            });
+            Collections.sort(pharmacies, new Comparator<Pharmacy>(){
+                @Override
+                public int compare(Pharmacy p1, Pharmacy p2) {
+                    Boolean p1Opened = Boolean.valueOf(p1.isOpenNow());
+                    Boolean p2Opened = Boolean.valueOf(p2.isOpenNow());
+                    if(p1Opened && !p2Opened){
+                        return 1;
+                    }else if (!p1Opened && p2Opened){
+                        return -1;
+                    }
+                    return 0;
+                }
+            });
+        }
+
+        PharmacyAdapter adapter = new PharmacyAdapter(this, pharmacies, this.lat, this.lng);
         ListView listView = (ListView) findViewById(R.id.pharmacy_list);
         listView.setAdapter(adapter);
         pharmacyDb.close();
@@ -246,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng lieu = new LatLng(this.lat, this.lng);
 
         //mMap.setMyLocationEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lieu, 14));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lieu, this.zoom));
 
         mMap.addMarker(new MarkerOptions()
                 .title("Votre position")
@@ -405,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
 
-                Pharmacy pharmacy = new Pharmacy(name, adress, phone, openNow, openingHours, lat, lng, "", 0, false);
+                Pharmacy pharmacy = new Pharmacy(name, adress, phone, openNow, openingHours, lat, lng, "", 0, false, "");
                 new JsonTask("DISTANCE", pharmacy).execute("https://maps.googleapis.com/maps/api/distancematrix/json?origins="+this.lat+","+this.lng+"&destinations="+lat+","+lng+"&mode=walking&transit_routing_preference=less_walking&language=fr-FR&key=AIzaSyCRFuEoAV8sdMDanZ3sFgQ4PY2h5dOLePA");
 
                 /*Location user = new Location("User");

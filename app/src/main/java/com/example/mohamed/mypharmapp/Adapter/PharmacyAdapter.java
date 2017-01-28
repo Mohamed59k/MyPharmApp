@@ -24,9 +24,13 @@ import java.util.ArrayList;
 public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
 
     private View currentView;
+    private Double userLat;
+    private Double userLng;
 
-    public PharmacyAdapter(Context context, ArrayList<Pharmacy> pharmacies) {
+    public PharmacyAdapter(Context context, ArrayList<Pharmacy> pharmacies, Double userLat, Double userLng) {
         super(context, 0, pharmacies);
+        this.userLat = userLat;
+        this.userLng = userLng;
     }
 
     /**
@@ -83,6 +87,8 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
                 Intent intent = new Intent(getContext(), PharmacyActivity.class);
                 ArrayList<String> values = new ArrayList<String>();
                 Bundle b = new Bundle();
+                values.add(Double.toString(userLat));
+                values.add(Double.toString(userLng));
                 values.add(Long.toString(pharmacy.getId()));
                 values.add(pharmacy.getName());
                 values.add(pharmacy.getAdress());
@@ -94,6 +100,7 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
                 values.add(pharmacy.getDistanceText());
                 values.add(Integer.toString(pharmacy.getDistanceValue()));
                 values.add(Boolean.toString(pharmacy.isFavorite()));
+                values.add(pharmacy.getNote());
                 b.putStringArrayList("values", values);
                 intent.putExtras(b);
 

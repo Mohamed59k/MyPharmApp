@@ -17,8 +17,9 @@ public class Pharmacy {
     private String distanceText;
     private Integer distanceValue;
     private boolean favorite;
+    private String note;
 
-    public Pharmacy(long id, String name, String adress, String phone, boolean openNow, String openingHours, Float lat, Float lng, String distanceText, Integer distanceValue, boolean favorite){
+    public Pharmacy(long id, String name, String adress, String phone, boolean openNow, String openingHours, Float lat, Float lng, String distanceText, Integer distanceValue, boolean favorite, String note){
         this.id = id;
         this.name = name;
         this.adress = adress;
@@ -30,9 +31,10 @@ public class Pharmacy {
         this.distanceText = distanceText;
         this.distanceValue = distanceValue;
         this.favorite = favorite;
+        this.note = note;
     }
 
-    public Pharmacy(String name, String adress, String phone, boolean openNow, String openingHours, Float lat, Float lng, String distanceText, Integer distanceValue, boolean favorite){
+    public Pharmacy(String name, String adress, String phone, boolean openNow, String openingHours, Float lat, Float lng, String distanceText, Integer distanceValue, boolean favorite, String note){
         this.name = name;
         this.adress = adress;
         this.phone = phone;
@@ -44,6 +46,7 @@ public class Pharmacy {
         this.distanceText = distanceText;
         this.distanceValue = distanceValue;
         this.favorite = favorite;
+        this.note = note;
     }
 
     public String getDistanceText() {
@@ -56,6 +59,14 @@ public class Pharmacy {
 
     public Integer getDistanceValue() {
         return distanceValue;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public void setDistanceValue(Integer distanceValue) {

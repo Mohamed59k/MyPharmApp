@@ -13,10 +13,20 @@ import java.util.ArrayList;
 
 public class FavouriteListActivity extends AppCompatActivity {
 
+    private Double userLat;
+    private Double userLng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite_list);
+
+        Bundle b = getIntent().getExtras();
+        if(b != null){
+            ArrayList<String> values = b.getStringArrayList("values");
+            this.userLat = Double.parseDouble(values.get(0));
+            this.userLng = Double.parseDouble(values.get(1));
+        }
 
         this.refreshList();
     }
@@ -40,7 +50,7 @@ public class FavouriteListActivity extends AppCompatActivity {
             Log.d("id: ", pharmacy.getId() + ", name : " +pharmacy.getName() + ", adress : " +pharmacy.getAdress() + ", phone : " +pharmacy.getPhone() + ", openNow : " +pharmacy.isOpenNow() + ", openingHours : " +pharmacy.getOpeningHours() + ", lat : " +pharmacy.getLat() + ", lng : " +pharmacy.getLng());
         }
 
-        PharmacyAdapter adapter = new PharmacyAdapter(this, pharmacies);
+        PharmacyAdapter adapter = new PharmacyAdapter(this, pharmacies, userLat, userLng);
         ListView listView = (ListView) findViewById(R.id.pharmacy_favorite_list);
         listView.setAdapter(adapter);
         pharmacyDb.close();
