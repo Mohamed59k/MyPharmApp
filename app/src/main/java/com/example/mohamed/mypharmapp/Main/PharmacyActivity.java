@@ -2,6 +2,7 @@ package com.example.mohamed.mypharmapp.Main;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
@@ -116,17 +118,17 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
 
         final ImageView imageView = (ImageView) findViewById(R.id.pharmacy_imageView);
         if(this.isOpenNow){
-            imageView.setBackgroundColor(Color.parseColor("#A3FFAF"));
+            imageView.setBackgroundColor(Color.parseColor("#C0FFC9"));
         }else{
-            imageView.setBackgroundColor(Color.parseColor("#FF6565"));
+            imageView.setBackgroundColor(Color.parseColor("#FFCACA"));
         }
 
         final ImageButton favoriteButton = (ImageButton) findViewById(R.id.pharmacy_favorite);
 
         if(isFavorite){
-            favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+            favoriteButton.setImageResource(R.mipmap.ic_plain_star);
         }else{
-            favoriteButton.setImageResource(android.R.drawable.btn_star);
+            favoriteButton.setImageResource(R.mipmap.ic_empty_star);
 
         }
 
@@ -136,10 +138,10 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
                 DataBase pharmacyDb = new DataBase(getApplicationContext());
                 if(isFavorite){
                     isFavorite=false;
-                    favoriteButton.setImageResource(android.R.drawable.btn_star);
+                    favoriteButton.setImageResource(R.mipmap.ic_empty_star);
                 }else{
                     isFavorite=true;
-                    favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+                    favoriteButton.setImageResource(R.mipmap.ic_plain_star);
                 }
                 pharmacyDb.updatePharmacy(new Pharmacy(id, name, adress, phone, isOpenNow, openingHours, lat, lng, distanceText, distanceValue, isFavorite, note));
                 pharmacyDb.close();
@@ -196,13 +198,22 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
 
         mMap.addMarker(new MarkerOptions()
                 .title("Votre position")
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_user_localisation))
                 .position(new LatLng(this.userLat, this.userLng)));
 
         mMap.addMarker(new MarkerOptions()
                 .title(this.name)
                 .snippet(this.adress)
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_adress))
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_address))
                 .position(lieu));
+
+        PolylineOptions line=
+                new PolylineOptions().add(new LatLng(this.userLat, this.userLng),
+                        lieu)
+                        .color(ContextCompat.getColor(getApplicationContext(), R.color.appTheme))
+                        .width(9);
+
+        mMap.addPolyline(line);
 
         mMap.setMyLocationEnabled(true);
 

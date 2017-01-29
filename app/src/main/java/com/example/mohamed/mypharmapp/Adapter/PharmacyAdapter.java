@@ -60,15 +60,15 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
         final ImageButton favoriteButton = (ImageButton) convertView.findViewById(R.id.favorite_button);
 
         if(pharmacy.isOpenNow()){
-            imageView.setBackgroundColor(Color.parseColor("#A3FFAF"));
+            imageView.setBackgroundColor(Color.parseColor("#C0FFC9"));
         }else{
-            imageView.setBackgroundColor(Color.parseColor("#FF6565"));
+            imageView.setBackgroundColor(Color.parseColor("#FFCACA"));
         }
 
         if(pharmacy.isFavorite()){
-            favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+            favoriteButton.setImageResource(R.mipmap.ic_plain_star);
         }else{
-            favoriteButton.setImageResource(android.R.drawable.btn_star);
+            favoriteButton.setImageResource(R.mipmap.ic_empty_star);
 
         }
 
@@ -121,10 +121,10 @@ public class PharmacyAdapter extends ArrayAdapter<Pharmacy> {
                     DataBase pharmacyDb = new DataBase(getContext());
                     if(pharmacy.isFavorite()){
                         pharmacy.setFavorite(false);
-                        favoriteButton.setImageResource(android.R.drawable.btn_star);
+                        favoriteButton.setImageResource(R.mipmap.ic_empty_star);
                     }else{
                         pharmacy.setFavorite(true);
-                        favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+                        favoriteButton.setImageResource(R.mipmap.ic_plain_star);
                     }
                     pharmacyDb.updatePharmacy(pharmacy);
                     pharmacyDb.close();

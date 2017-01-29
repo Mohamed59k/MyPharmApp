@@ -25,7 +25,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1.0">
+        android:layout_weight="1.0"
+        android:background="@android:color/white">
 
         <LinearLayout
             android:orientation="vertical"
@@ -43,7 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.15"
-                    app:srcCompat="@android:drawable/btn_star"
+                    app:srcCompat="@mipmap/ic_empty_star"
                     tools:ignore="ContentDescription"
                     android:background="@android:color/transparent" />
 
@@ -140,7 +141,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.15"
-                    app:srcCompat="@mipmap/ic_adress"
+                    app:srcCompat="@mipmap/ic_address"
                     tools:ignore="ContentDescription"
                     android:background="@android:color/transparent" />
 

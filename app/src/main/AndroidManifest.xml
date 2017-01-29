@@ -10,17 +10,12 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".Main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity android:name=".Main.MainActivity">
+        </activity>
 
         <activity android:name=".Main.PharmacyActivity" />
         <activity android:name=".Main.ItineraryActivity" />
@@ -28,7 +23,14 @@
         <activity
             android:name=".Main.NoteActivity"
             android:theme="@style/Theme.AppCompat" />
-        <activity android:name=".Main.SettingsActivity"></activity>
+        <activity android:name=".Main.SettingsActivity" />
+        <activity android:name=".Main.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

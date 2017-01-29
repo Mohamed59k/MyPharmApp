@@ -5,13 +5,14 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="70dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@android:color/white">
 
     <ImageButton
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.15"
-        app:srcCompat="@android:drawable/btn_star"
+        app:srcCompat="@mipmap/ic_empty_star"
         android:id="@+id/favorite_button"
         tools:ignore="ContentDescription"
         android:background="@android:color/transparent" />
