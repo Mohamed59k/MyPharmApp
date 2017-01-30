@@ -2,10 +2,12 @@ package com.example.mohamed.mypharmapp.Main;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -41,6 +43,8 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
     private Integer distanceValue;
     private boolean isFavorite;
     private String note;
+    private boolean recent;
+    private ImageButton itinerary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,15 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
             this.distanceValue = Integer.parseInt(values.get(11));
             this.isFavorite = Boolean.parseBoolean(values.get(12));
             this.note = values.get(13);
+            this.recent = Boolean.parseBoolean(values.get(14));
         }
+        itinerary = (ImageButton)findViewById(R.id.button_itinerary);
+        itinerary.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                callItinerary();
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -143,7 +155,7 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
                     isFavorite=true;
                     favoriteButton.setImageResource(R.mipmap.ic_plain_star);
                 }
-                pharmacyDb.updatePharmacy(new Pharmacy(id, name, adress, phone, isOpenNow, openingHours, lat, lng, distanceText, distanceValue, isFavorite, note));
+                pharmacyDb.updatePharmacy(new Pharmacy(id, name, adress, phone, isOpenNow, openingHours, lat, lng, distanceText, distanceValue, isFavorite, note, recent));
                 pharmacyDb.close();
             }
         });
@@ -171,6 +183,7 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
                 values.add(Integer.toString(distanceValue));
                 values.add(Boolean.toString(isFavorite));
                 values.add(note);
+                values.add(Boolean.toString(recent));
                 b.putStringArrayList("values", values);
                 intent.putExtras(b);
                 startActivityForResult(intent, 1);
@@ -218,5 +231,12 @@ public class PharmacyActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.setMyLocationEnabled(true);
 
         //mMap.addPolyline()
+    }
+
+    public void callItinerary(){
+        Uri gmmIntentUri = Uri.parse("google.navigation:q="+this.lat+","+this.lng);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 }

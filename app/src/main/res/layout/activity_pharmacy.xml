@@ -136,15 +136,13 @@
                 android:layout_height="50dp"
                 android:gravity="center">
 
-                <ImageView
-                    android:id="@+id/address_image"
+                <ImageButton
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    app:srcCompat="@mipmap/ic_itinerary"
+                    android:id="@+id/button_itinerary"
                     android:layout_weight="0.15"
-                    app:srcCompat="@mipmap/ic_address"
-                    tools:ignore="ContentDescription"
                     android:background="@android:color/transparent" />
-
 
                 <TextView
                     android:id="@+id/pharmacy_adress"
@@ -154,6 +152,7 @@
                     android:paddingLeft="20dp"
                     android:gravity="left"
                     android:text="@string/adress_field" />
+
 
             </LinearLayout>
 
