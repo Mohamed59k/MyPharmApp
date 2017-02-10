@@ -10,6 +10,6 @@ Consulter le trafic près des pharmacies.
 Ainsi que d’autres fonctionnalités.
 Cette application pourra assister l’utilisateur vers le meilleur choix de pharmacie possible en prenant en compte plusieurs critères tels que la distance, le trafic, les horaires de fermeture et d’ouverture, …
 
-Voici le lien vers notre blog, vous trouvez plus d'informations sur notre application :-)
+Voici le lien vers notre blog, vous pouvez y retrouver plus d'informations sur notre application :-)
 
 https://pharmapp.wordpress.com/
