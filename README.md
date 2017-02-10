@@ -1,4 +1,4 @@
-# MyPharmAp
+# MyPharmap
 
 Le but de ce projet est de développer une application qui permet de trouver les pharmacies de garde à proximité de chez soi ou dans une ville précise. De ce fait, l’utilisateur pourra :
 
